@@ -13,8 +13,7 @@ namespace sayunanaBase.Helper
         }
 
         public static Language SystemLanguage = Language.ja;
-        private static Dictionary<string, Dictionary<string, string>> _loadLanguageText;
-
+        private static Dictionary<string, Dictionary<string, string>> _loadLanguageText = new Dictionary<string, Dictionary<string, string>>();
         public static string TranslateText(string projectName, Language language, string key)
         {
             if (_loadLanguageText == null)
