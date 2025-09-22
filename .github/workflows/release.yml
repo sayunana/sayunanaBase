@@ -1,0 +1,40 @@
+name: Auto Release
+on: workflow_dispatch
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    env:
+      JSON_FILE_PATH: "Assets/sayunana/package.json"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Version
+        id: GetVersion
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+          echo "VERSION=$(jq ".version" $JSON_FILE_PATH | tr -d '"')" >> $GITHUB_ENV 
+
+      - name: ZIP
+        run: |
+          cd ${{ github.workspace }}/Assets/sayunana
+          mv sayunanaBase.asmdef sayunanaBase.asmdef.meta package.json package.json.meta sayunanaBase/.
+          cd sayunanaBase
+          zip -r com.github.sayunana.sayunanaBase.${{env.VERSION}}.zip *
+
+      - name: FilePath
+        run: |
+          echo "${{ github.workspace }}/Assets/sayunana/sayunanaBase/com.github.sayunana.sayunanaBase.${{env.VERSION}}.zip"
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: sayunanaBase ${{env.VERSION}}
+          body: "Update sayunanaBase ${{env.VERSION}}\n UPM `https://github.com/sayunana/sayunanaBase.git?path=Assets/sayunana#${{env.VERSION}}`"
+          tag_name: ${{env.VERSION}}
+          draft: false
+          files: "${{ github.workspace }}/Assets/sayunana/sayunanaBase/com.github.sayunana.sayunanaBase.${{env.VERSION}}.zip"
