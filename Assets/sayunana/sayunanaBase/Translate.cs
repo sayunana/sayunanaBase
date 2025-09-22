@@ -19,7 +19,8 @@ namespace sayunanaBase.Helper
 
         public static string TranslateText(string projectName, Language language, string key)
         {
-            if (!_loadLanguageText.TryGetValue(projectName, out var translateDic))
+            var projectKey = $"{projectName}-{language}";
+            if (!_loadLanguageText.TryGetValue(projectKey, out var translateDic))
             {
                 translateDic = TranslateTextLoad(projectName, language);
             }
@@ -31,7 +32,7 @@ namespace sayunanaBase.Helper
         {
             var loadLanguageFile = Resources.Load<TextAsset>($"{projectName}-{language}").ToString();
             var data = Deserialize(loadLanguageFile);
-            _loadLanguageText.Add(projectName, data);
+            _loadLanguageText.Add(loadLanguageFile, data);
             return data;
         }
 
@@ -54,6 +55,11 @@ namespace sayunanaBase.Helper
             }
 
             return dic;
+        }
+
+        public static void ResetDictionary()
+        {
+            _loadLanguageText = new Dictionary<string, Dictionary<string, string>>();
         }
     }
 }
