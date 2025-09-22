@@ -12,27 +12,40 @@ namespace sayunanaBase.Helper
             en
         }
 
-        public static Language SystemLanguage = Language.ja;
+        public static Language SystemLanguage
+        {
+            get { return _systemLanguage; }
+            set
+            {
+                if (_systemLanguage != value)
+                {
+                    PlayerPrefs.SetInt("sayunanaBase-SystemLanguage", (int)value);
+                    _systemLanguage = value;
+                }
+            }
+        }
+
+        private static Language _systemLanguage = (Language)PlayerPrefs.GetInt("sayunanaBase-SystemLanguage", 0);
 
         private static Dictionary<string, Dictionary<string, string>> _loadLanguageText =
             new Dictionary<string, Dictionary<string, string>>();
 
-        public static string TranslateText(string projectName, Language language, string key)
+        public static string TranslateText(string projectName, string key)
         {
-            var projectKey = $"{projectName}-{language}";
+            var projectKey = $"{projectName}-{SystemLanguage}";
             if (!_loadLanguageText.TryGetValue(projectKey, out var translateDic))
             {
-                translateDic = TranslateTextLoad(projectName, language);
+                translateDic = TranslateTextLoad(projectName);
             }
 
             return translateDic.ContainsKey(key) ? translateDic[key] : $"未設定 : {key}";
         }
 
-        private static Dictionary<string, string> TranslateTextLoad(string projectName, Language language)
+        private static Dictionary<string, string> TranslateTextLoad(string projectName)
         {
-            var loadLanguageFile = Resources.Load<TextAsset>($"{projectName}-{language}").ToString();
+            var loadLanguageFile = Resources.Load<TextAsset>($"{projectName}-{SystemLanguage}").ToString();
             var data = Deserialize(loadLanguageFile);
-            _loadLanguageText.Add(loadLanguageFile, data);
+            _loadLanguageText.Add($"{projectName}-{SystemLanguage}", data);
             return data;
         }
 
