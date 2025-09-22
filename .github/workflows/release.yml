@@ -21,11 +21,11 @@ jobs:
           cd ${{ github.workspace }}/Assets/sayunana
           mv sayunanaBase.asmdef sayunanaBase.asmdef.meta package.json package.json.meta sayunanaBase/.
           cd sayunanaBase
-          zip -r com.github.sayunana.sayunanaBase.${{env.VERSION}}.zip *
+          zip -r com.github.sayunana.sayunanabase.${{env.VERSION}}.zip *
 
       - name: FilePath
         run: |
-          echo "${{ github.workspace }}/Assets/sayunana/sayunanaBase/com.github.sayunana.sayunanaBase.${{env.VERSION}}.zip"
+          echo "${{ github.workspace }}/Assets/sayunana/sayunanaBase/com.github.sayunana.sayunanabase.${{env.VERSION}}.zip"
 
       - name: Create Release
         id: create_release
@@ -37,4 +37,4 @@ jobs:
           body: "Update sayunanaBase ${{env.VERSION}}\n UPM `https://github.com/sayunana/sayunanaBase.git?path=Assets/sayunana#${{env.VERSION}}`"
           tag_name: ${{env.VERSION}}
           draft: false
-          files: "${{ github.workspace }}/Assets/sayunana/sayunanaBase/com.github.sayunana.sayunanaBase.${{env.VERSION}}.zip"
+          files: "${{ github.workspace }}/Assets/sayunana/sayunanaBase/com.github.sayunana.sayunanabase.${{env.VERSION}}.zip"
