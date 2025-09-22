@@ -13,26 +13,26 @@ namespace sayunanaBase.Helper
         }
 
         public static Language SystemLanguage = Language.ja;
-        private static Dictionary<string, Dictionary<string, string>> _loadLanguageText = new Dictionary<string, Dictionary<string, string>>();
+
+        private static Dictionary<string, Dictionary<string, string>> _loadLanguageText =
+            new Dictionary<string, Dictionary<string, string>>();
+
         public static string TranslateText(string projectName, Language language, string key)
         {
-            if (_loadLanguageText == null)
-            {
-                TranslateTextLoad(projectName, language);
-            }
-
             if (!_loadLanguageText.TryGetValue(projectName, out var translateDic))
             {
-                return $"未設定 : {key}";
+                translateDic = TranslateTextLoad(projectName, language);
             }
 
-            return translateDic.ContainsKey(key) ? translateDic[key] : key;
+            return translateDic.ContainsKey(key) ? translateDic[key] : $"未設定 : {key}";
         }
 
-        private static void TranslateTextLoad(string projectName, Language language)
+        private static Dictionary<string, string> TranslateTextLoad(string projectName, Language language)
         {
             var loadLanguageFile = Resources.Load<TextAsset>($"{projectName}-{language}").ToString();
-            _loadLanguageText.Add(projectName, Deserialize(loadLanguageFile));
+            var data = Deserialize(loadLanguageFile);
+            _loadLanguageText.Add(projectName, data);
+            return data;
         }
 
         private static Dictionary<string, string> Deserialize(string json)
